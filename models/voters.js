@@ -1,114 +1,85 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {Model} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Voters extends Model {
+  class voter extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      Voters.belongsTo(models.Election, {
+     static associate(models) {
+      // define association here
+      voter.belongsTo(models.election, {
         foreignKey: "electionID",
       });
-
-      Voters.hasMany(models.answers, {
-        foreignKey: "voterid",
-      });
     }
-    static add(Voterid, password, electionID) {
-      return this.create({
-        voterid: Voterid,
+
+    passwordreset(password) {
+      return this.update({ password });
+    }
+
+    static async addVoter({ voterID, password, electionID }) {
+      return await this.create({
+        voterID,
+        password,
+        electionID,
         voted: false,
-        password: password,
-        electionID: electionID,
       });
     }
 
-    static modifypassword(Voterid, newpassword) {
-      return this.update(
-        {
-          password: newpassword,
-        },
-        {
-          where: {
-            voterid: Voterid,
-          },
-        }
-      );
-    }
-
-    static retrivevoters(electionID) {
-      return this.findAll({
+    static async VoterCount(electionID) {
+      return await this.count({
         where: {
           electionID,
         },
       });
     }
-    static countvoters(electionID) {
-      return this.count({
+
+    static async Voters(electionID) {
+      return await this.findAll({
         where: {
           electionID,
         },
+        order: [["id", "ASC"]],
       });
     }
-    static votersvoted(electionID) {
-      return this.count({
+
+    static async FindAVoter(id) {
+      return await this.findOne({
         where: {
-          electionID,
-          voted: true,
+          id,
         },
       });
     }
 
-    static votersnotvoted(electionID) {
-      return this.count({
+    static async delete(id) {
+      return await this.destroy({
         where: {
-          electionID,
-          voted: false,
-        },
-      });
-    }
-    static findVoter(Voterid) {
-      return this.findOne({
-        where: {
-          voterid: Voterid,
+          id,
         },
       });
     }
 
-    static delete(voterid) {
-      return this.destroy({
-        where: {
-          voterid: voterid,
-        },
-      });
-    }
-
-    static votecompleted(id) {
-      return this.update(
-        {
-          voted: true,
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
-    }
   }
-  Voters.init(
-    {
-      voterid: DataTypes.STRING,
-      voted: DataTypes.BOOLEAN,
-      password: DataTypes.STRING,
-      case: DataTypes.STRING,
+  voter.init({
+    voterID: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
-    {
-      sequelize,
-      modelName: "Voters",
-    }
-  );
-  return Voters;
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    voted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  }, 
+  {
+    sequelize,
+    modelName: 'voter',
+  });
+  return voter;
 };

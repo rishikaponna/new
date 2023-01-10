@@ -1,31 +1,65 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class questions extends Model {
-    static countquestions(electionID) {
-      return this.count({
+  class question extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+     static associate(models) {
+      // define association here
+      question.belongsTo(models.electionModel, {
+        foreignKey: "electionID",
+      });
+
+      question.hasMany(models.optionModel, {
+        foreignKey: "questionID",
+      });
+    }
+    
+    static async GetQuestionCount(electionID) {
+      return await this.count({
         where: {
           electionID,
         },
       });
     }
 
-    static addquestion({ questionname, description, electionID }) {
+    static EditQuestion({ name, description, id }) {
+      return this.update(
+        {
+          name,
+          description,
+        },
+        {
+          returning: true,
+          where: {
+            id,
+          },
+        }
+      );
+    }
+
+    static add({ name, description, electionID }) {
       return this.create({
-        questionname,
+        name,
         description,
         electionID,
       });
     }
-    static retrievequestion(id) {
-      return this.findOne({
+
+    static async GetQuestion(id) {
+      return await this.findOne({
         where: {
           id,
         },
-        order: [["id", "ASC"]],
       });
     }
-    static removequestion(id) {
+
+    static delete(id) {
       return this.destroy({
         where: {
           id,
@@ -33,30 +67,8 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static findquestion(electionID, questionname) {
-      return this.findOne({
-        where: {
-          questionname: questionname,
-          electionID: electionID,
-        },
-      });
-    }
-
-    static modifyquestion(questionname, desctiption, questionID) {
-      return this.update(
-        {
-          questionname: questionname,
-          description: desctiption,
-        },
-        {
-          where: {
-            id: questionID,
-          },
-        }
-      );
-    }
-    static retrievequestions(electionID) {
-      return this.findAll({
+    static async GetQuestions(electionID) {
+      return await this.findAll({
         where: {
           electionID,
         },
@@ -64,36 +76,16 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      questions.hasMany(models.answers, {
-        foreignKey: "questionID",
-      });
-
-      questions.belongsTo(models.Election, {
-        foreignKey: "electionID",
-      });
-
-      questions.hasMany(models.options, {
-        foreignKey: "questionID",
-      });
-    }
-    // define association here
   }
-
-  questions.init(
-    {
-      questionname: DataTypes.STRING,
-      description: DataTypes.STRING,
+  question.init({
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    {
-      sequelize,
-      modelName: "questions",
-    }
-  );
-  return questions;
+    description: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'question',
+  });
+  return question;
 };

@@ -1,51 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/x-icon" href="/img/vote.png">
+    <style>
+      body{
+        background-size:cover;
+      }
+      .u{
+        text-decoration: underline;
+      }
+      .one{
+        display: flex;
+        flex-direction: row;
+      }
+      .two{
+        display: flex;
+        flex-direction: row;
+      }
+      .three{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+      }
+      .four{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+      }
+      .round{
+        background-color: wheat;
+        border-radius: 50px;
+        padding: 10px;
+      }
+      .a{
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+      }
+    </style>
+    <!-- <link rel="stylesheet" href="./styles" /> -->
     <title><%= title %></title>
-</head>
-<body style="background-color: cornsilk; " >
-  
-        <div class="container flex flex-wrap items-center justify-between mx-auto">     
-            <b>
-            <p class="py=4">
-            <span class="self-center text-xl font-semibold whitespace-nowrap text-black-800 py-3" >welcome to voting platform </span>
-        </p>    
-        </b>       
-        </div>
-    <table align="center">
-          <tr>
-            <td>
-            <b >
-            <p class="py-3"> MALLIK ONLINE VOTEING APPLICATION</p>
-           </b>
-            </td>
-           </tr>
-           <tr>
-            <td>
-            <p class="py-1">New here? <a class="text-green-600" href="/signup">Sign-up</a></p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-            <p class="py-1">Existing user? <a class="text-green-600" href="/login">Sign-in</a></p>
-        </td>
-        </tr>
-         
-</table>
-</body>
-<br>
-<br>
-<% if (messages.success) { %>
-    <div class="bg-green-300 text-green-900 p-2 rounded-lg shadow">
-        <center>
-        <li><b><%= messages.success %></b>
-        </center>
-        </li>
-        </div>
-<% } %> 
+    <!-- index page,that is, this is the page where the user first visits the website -->
+  </head>
+  <body class="bg-gray-50" background="img/img1.jpg">
+    <nav>
+      <div class="container flex flex-wrap items-center justify-between mx-auto">
+        <a href="/" class="py-2 px-4 flex items-center">
+          <span class="self-center text-xl font-semibold whitespace-nowrap text-cyan-400 hover:text-white">E-Voting</span>
+        </a>
+      </div>
+    </nav>
+    <div>
+      <% if (messages && messages.error && messages.error.length > 0) { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+              <p class="bg-white my-3 list-none rounded-md px-4 py-2 font-serif"><%= messages.error[i] %></p>
+          <% } %>
+      <% } %>
+  </div>
+    <div class="grid grid-cols-7">
+      <div class="col-start-3 col-span-3">
+        <p class="py-5 mb-10 text-4xl font-serif text-cyan-400 u">ONLINE VOTING PLATFORM</p>
+        <p class="py-1 text-xl py-3 mb-9 text-white">
+        <a class="round py-3 mb-9 text-cyan-400 font-serif hover:text-black" href="/signup">SIGN-UP</a>
+        </p>
+        <p class="py-1 text-xl font-serif py-3 mb-9 text-white">
+         <a class="round text-cyan-400 font-serif hover:text-black py-3 mb-9" href="/login">SIGN-IN</a>
+        </p>
+      </div>
+    </div>
+  </body>
 </html>
