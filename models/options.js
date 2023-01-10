@@ -1,20 +1,13 @@
-'use strict';
-const {Model} = require('sequelize');
+"use strict";
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class option extends Model {
+  class options extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     static associate(models) {
-      // define association here
-      option.belongsTo(models.question, {
-        foreignKey: "questionID",
-        onDelete: "CASCADE",
-      });
-    }
-    static GetOptions(questionID) {
+    static retrieveoptions(questionID) {
       return this.findAll({
         where: {
           questionID,
@@ -22,55 +15,65 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-
-    static GetOption(id) {
+    static retriveoption(id) {
       return this.findOne({
         where: {
           id,
         },
       });
     }
-
-    static add({ value, questionID }) {
-      return this.create({
-        value,
-        questionID,
-      });
-    }
-
-    static edit({ value, id }) {
+    static modifyoption(optionname, id) {
       return this.update(
         {
-          value,
+          optionname: optionname,
         },
         {
           where: {
-            id,
+            id: id,
           },
         }
       );
     }
-
-    static delete(id) {
+    static removeoptions(id) {
       return this.destroy({
         where: {
           id,
         },
       });
     }
-
-  }
-  option.init({
-    option: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: true,
-      },
+    static addoption({ optionname, questionID }) {
+      return this.create({
+        optionname,
+        questionID,
+      });
     }
-  }, {
-    sequelize,
-    modelName: 'option',
-  });
-  return option;
+
+    static findoption({ optionname }) {
+      return this.findOne({
+        optionname,
+      });
+    }
+
+    static associate(models) {
+      options.belongsTo(models.questions, {
+        foreignKey: "questionID",
+        onDelete: "CASCADE",
+      });
+
+      options.hasMany(models.answers, {
+        foreignKey: "chossedoption",
+      });
+    }
+    // define association here
+  }
+  options.init(
+    {
+      optionname: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "options",
+    }
+  );
+  return options;
 };
